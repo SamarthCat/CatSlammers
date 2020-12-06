@@ -1,0 +1,50 @@
+fileFormatVersion: 2
+guid: cafcb48e0d8250b4591d57f6644ddc60
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - tf: {instanceID: 0}
+  - sr: {instanceID: 0}
+  - bsr: {instanceID: 0}
+  - cat1: {instanceID: 0}
+  - cat1bullet: {instanceID: 0}
+  - cat2: {instanceID: 0}
+  - cat2bullet: {instanceID: 0}
+  - cat3: {instanceID: 0}
+  - cat3bullet: {instanceID: 0}
+  - cat4: {fileID: 21300000, guid: 8a70d2e438ad585498c6523ac517638b, type: 3}
+  - cat4bullet: {instanceID: 0}
+  - cat4_1: {fileID: 21300000, guid: 8a70d2e438ad585498c6523ac517638b, type: 3}
+  - cat4_1bullet: {fileID: 21300000, guid: d3060742d58afb24f8eff90f6d5e62ea, type: 3}
+  - cat5: {instanceID: 0}
+  - cat5bullet: {instanceID: 0}
+  - cat6: {instanceID: 0}
+  - cat6bullet: {instanceID: 0}
+  - cat7: {instanceID: 0}
+  - cat7bullet: {instanceID: 0}
+  - cat8: {instanceID: 0}
+  - cat8bullet: {instanceID: 0}
+  - cat8_1: {instanceID: 0}
+  - cat8_1bullet: {instanceID: 0}
+  - cat9: {instanceID: 0}
+  - cat9bullet: {instanceID: 0}
+  - cat10: {instanceID: 0}
+  - cat10bullet: {instanceID: 0}
+  - cat11: {instanceID: 0}
+  - cat11bullet: {instanceID: 0}
+  - cat12: {instanceID: 0}
+  - cat12bullet: {instanceID: 0}
+  - cat13: {instanceID: 0}
+  - cat13bullet: {instanceID: 0}
+  - cat14: {instanceID: 0}
+  - cat14bullet: {instanceID: 0}
+  - cat15: {instanceID: 0}
+  - cat15bullet: {instanceID: 0}
+  - cat16: {instanceID: 0}
+  - cat16bullet: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

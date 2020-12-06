@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1069863997520",
+    "firebase_url": "https://cat-slammers-362e7.firebaseio.com",
+    "project_id": "cat-slammers-362e7",
+    "storage_bucket": "cat-slammers-362e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069863997520:android:ef9ad76baacb4837d84155",
+        "android_client_info": {
+          "package_name": "com.SamarthCat.CatSlammers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069863997520-e7h762sj7nm78b6ngh2sge3mdt67odeq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0I2srpDRPmaK4AUWjAbB96Yx98AfJt9I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069863997520-e7h762sj7nm78b6ngh2sge3mdt67odeq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

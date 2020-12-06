@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469c24fdb3bd6431b92cc1465bd9166b, type: 3}
+  m_Name: RemoteConfigDataStoreAsset
+  m_EditorClassIdentifier: 
+  rsKeyList:
+  - metadata:
+      entityId: 0b8a566f-930e-43c6-8836-56bd2399db93
+    rs:
+      key: discount
+      type: int
+      value: 30
+  - metadata:
+      entityId: 5391dec6-cbae-44bc-86e6-8a1d26822795
+    rs:
+      key: cheapCat
+      type: string
+      value: none
+  - metadata:
+      entityId: a1f3a68b-2bca-4bdd-a6d8-d46e9a79c5ed
+    rs:
+      key: originalPrice
+      type: int
+      value: 30
+  - metadata:
+      entityId: 67445a1e-b653-4883-bf39-c36c396896ef
+    rs:
+      key: cheapCatName
+      type: string
+      value: Fire
+  - metadata:
+      entityId: c0822392-f7ae-4d6a-bfb5-b635175c2ffd
+    rs:
+      key: altMusic
+      type: bool
+      value: False
+  rsLastCachedKeyList:
+  - metadata:
+      entityId: 0b8a566f-930e-43c6-8836-56bd2399db93
+    rs:
+      key: discount
+      type: int
+      value: 30
+  - metadata:
+      entityId: 5391dec6-cbae-44bc-86e6-8a1d26822795
+    rs:
+      key: cheapCat
+      type: string
+      value: none
+  - metadata:
+      entityId: a1f3a68b-2bca-4bdd-a6d8-d46e9a79c5ed
+    rs:
+      key: originalPrice
+      type: int
+      value: 30
+  - metadata:
+      entityId: 67445a1e-b653-4883-bf39-c36c396896ef
+    rs:
+      key: cheapCatName
+      type: string
+      value: Fire
+  - metadata:
+      entityId: c0822392-f7ae-4d6a-bfb5-b635175c2ffd
+    rs:
+      key: altMusic
+      type: bool
+      value: False
+  configId: 742e8410-19d2-4444-80fd-ac3b37a072ca
+  currentEnvironmentId: 6df45c2b-a4da-403e-8862-9c3ede1f293c
+  environments:
+  - id: 6df45c2b-a4da-403e-8862-9c3ede1f293c
+    appId: 
+    name: Release (Default)
+    description: 
+    createdAt: 2020-09-12T16:23:07Z
+    updatedAt: 2020-09-12T16:23:07Z
+  - id: 10bfa101-e4e1-4684-be35-367525fa264c
+    appId: 
+    name: Development
+    description: 
+    createdAt: 2020-09-12T16:23:07Z
+    updatedAt: 2020-09-12T16:23:07Z
+  rulesList: []
+  lastCachedRulesList: []
+  addedRulesIDs: []
+  updatedRulesIDs: []
+  deletedRulesIDs: []
