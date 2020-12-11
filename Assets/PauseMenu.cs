@@ -51,9 +51,13 @@ public class PauseMenu : MonoBehaviour
 
     public void Pause()
     {
-        es2.enabled = true;
-        es.enabled = false;
-        es3.enabled = false;
+        try
+        {
+            es2.enabled = true;
+            es.enabled = false;
+            es3.enabled = false;
+        }
+        catch { }
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         GameIsPaused = true;

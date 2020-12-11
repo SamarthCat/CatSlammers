@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Cinemachine;
+using System.Collections;
 
 namespace EZCameraShake
 {
@@ -28,6 +30,8 @@ namespace EZCameraShake
         /// Offset that will be applied to the camera's default (0,0,0) rest rotation
         /// </summary>
         public Vector3 RestRotationOffset = new Vector3(0, 0, 0);
+
+        Vector3 restPos;
 
         Vector3 posAddShake, rotAddShake;
 
@@ -63,8 +67,50 @@ namespace EZCameraShake
                 }
             }
 
-            transform.localPosition = posAddShake + RestPositionOffset;
+            if (cameraShakeInstances.Count >= 1)
+            {
+                var cine = Camera.main.GetComponent<CinemachineVirtualCamera>();
+                if (cine != null)
+                {
+                    //Debug.Log("yes cinemachine");
+                    var testforperlin = cine.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+                    if (testforperlin == null)
+                    {
+                        cine.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_NoiseProfile = Resources.Load("6D Shake") as NoiseSettings;
+                        cine.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = 0f;
+                        cine.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = 1f;
+                    }
+                    else
+                    {
+                        cineshake(cine, .2f);
+                        return;
+                    }
+                }
+                else
+                {
+                    //Debug.Log("no cinemachine");
+                }
+            }
+            else
+            {
+                restPos = Camera.main.transform.position;
+            }
+
+            transform.localPosition = posAddShake + restPos;
             transform.localEulerAngles = rotAddShake + RestRotationOffset;
+        }
+
+        public void cineshake(CinemachineVirtualCamera _cine, float time)
+        {
+            var perlin = _cine.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            perlin.m_AmplitudeGain = 8f;
+            StartCoroutine(WaitForShake(time, perlin));
+        }
+
+        IEnumerator WaitForShake(float time, CinemachineBasicMultiChannelPerlin _perlin)
+        {
+            yield return new WaitForSeconds(time);
+            _perlin.m_AmplitudeGain = 0f;
         }
 
         /// <summary>

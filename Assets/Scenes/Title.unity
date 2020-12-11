@@ -5440,8 +5440,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aus: {fileID: 531196708}
-  ac: {fileID: 8300000, guid: 4e16e0a220aae514a92743cfdee5252c, type: 3}
-  nac: {fileID: 8300000, guid: 5c7259d7eefb8f94585eff6a007b8144, type: 3}
 --- !u!1 &532354666
 GameObject:
   m_ObjectHideFlags: 0
@@ -9733,7 +9731,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: EXTRAS
+  m_text: OPTIONS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3762125e282c70b408a5a3e77da35096, type: 2}
   m_sharedMaterial: {fileID: 287295809573086596, guid: 3762125e282c70b408a5a3e77da35096, type: 2}
@@ -9823,7 +9821,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   English:
-  - EXTRAS
+  - OPTIONS
   French:
   - "Suppl\xE9ments"
   Romanian:
@@ -19285,7 +19283,7 @@ GameObject:
   - component: {fileID: 2028787724}
   - component: {fileID: 2028787727}
   m_Layer: 5
-  m_Name: Extras
+  m_Name: Options
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

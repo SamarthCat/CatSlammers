@@ -6,23 +6,25 @@ using TMPro;
 
 public class MoreButtons : MonoBehaviour
 {
-    public bool isToggle;
-    public Toggle tg;
-    Resolution[] resolutions;
+    bool fs;
+    public Resolution[] resolutions;
     public TMP_Dropdown resolutionDropdown;
     public int currentResolutionIndex;
+    public string[] optionHeight;
+    List<string> options = new List<string>();
 
     // Start is called before the first frame update
     void Start()
     {
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
-        List<string> options = new List<string>();
         currentResolutionIndex = PlayerPrefs.GetInt("res");
         for (int i = 0; i < resolutions.Length; i++)
         {
-            string option = resolutions[i].width + " x " + resolutions[i].height;
+            string option = resolutions[i].width + "x" + resolutions[i].height;
+            string optionfs = resolutions[i].width + "x" + resolutions[i].height + "(Fullscreen)";
             options.Add(option);
+            options.Add(optionfs);
 
             if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
             {
@@ -33,53 +35,42 @@ public class MoreButtons : MonoBehaviour
         resolutionDropdown.value = PlayerPrefs.GetInt("res");
         resolutionDropdown.RefreshShownValue();
 
-        if (isToggle)
-        {
-            if (PlayerPrefs.GetInt("Fullscreen") == 1)
-            {
-                tg.isOn = false;
-            }
-            else
-            {
-                tg.isOn = true;
-            }
-        }
     }
 
 
-    public void Fullscreen(bool booly)
-    {
-        if (booly)
-        {
-            PlayerPrefs.SetInt("Fullscreen", 0);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("Fullscreen", 1);
-        }
-    }
 
     // Update is called once per frame
     void Update()
     {
 
-
-
-        if (PlayerPrefs.GetInt("Fullscreen") == 1)
-        {
-            Screen.fullScreen = false;
-        }
-        else if (PlayerPrefs.GetInt("Fullscreen") != 1)
-        {
-            Screen.fullScreen = true;
-        }
     }
 
     public void SetResolution(int index)
     {
-        Resolution res = resolutions[index];
+        //Debug.Log(resolutionDropdown.captionText.text);
+        if (resolutionDropdown.captionText.text.Contains("Fullscreen"))
+        {
+            fs = true;
+            //Debug.Log("Changed Res To index: " + index + " and Is Fullscreen");
+        }
+        else
+        {
+            fs = false;
+            //Debug.Log("Changed Res To index: " + index + " and Is NOT Fullscreen");
+        }
+        string[] option = options[index].Split('x');
+        if (option[1].Contains("Fullscreen"))
+        {
+            optionHeight = option[1].Split('(');
+        }
+        else
+        {
+            optionHeight[0] = option[1];
+        }
+        int width = int.Parse(option[0]);
+        int height = int.Parse(optionHeight[0]);
         PlayerPrefs.SetInt("res", index);
-        Screen.SetResolution(res.width, res.height, Screen.fullScreen);
+        Screen.SetResolution(width, height, fs);
     }
 
 

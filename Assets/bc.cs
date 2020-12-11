@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using EZCameraShake;
 
 public class bc : MonoBehaviour
 {
@@ -38,9 +39,11 @@ public class bc : MonoBehaviour
     public int amountToWin;
     public TextMeshProUGUI tmp;
     public float Ediv = 10;
+    public Encourage en;
 
     void Start()
     {
+        en = FindObjectOfType<Encourage>();
         eps.Stop();
     }
 
@@ -51,7 +54,7 @@ public class bc : MonoBehaviour
         {
             PHealth = PHealth - eai.enemyDamage;
             flash();
-
+            en.doDiscourage();
         }
     }
 
@@ -60,8 +63,23 @@ public class bc : MonoBehaviour
 
     public void bullethit()
     {
-        EHealth = EHealth - PDamage;
-        eflash();
+        var rand = Random.Range(0, 7);
+        if (rand == 4)
+        {
+            //Critical Hit
+            en.doCritical();
+            EHealth = EHealth - (PDamage*2);
+            eflash();
+            CameraShaker.Instance.ShakeOnce(11f,11f, 0.4f, 1.3f);
+        }
+        else
+        {
+            //Normal Hit
+            en.doEncourage();
+            EHealth = EHealth - PDamage;
+            eflash();
+            CameraShaker.Instance.ShakeOnce(4f, 4f, 0.1f, 1f);
+        }
     }
 
     void flash()

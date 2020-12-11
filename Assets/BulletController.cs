@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using EZCameraShake;
 
 public class BulletController : MonoBehaviour
 {
@@ -14,11 +15,13 @@ public class BulletController : MonoBehaviour
     public bool enablecollider = false;
     public int ecc = 0;
     public bool dontFlip;
+    CameraShaker shaker;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        shaker = Camera.main.gameObject.AddComponent<CameraShaker>();
+        shaker.RestPositionOffset = Camera.main.transform.position;
     }
 
 
@@ -48,9 +51,11 @@ public class BulletController : MonoBehaviour
 
 
 
+
     // Update is called once per frame
     void FixedUpdate()
     {
+
 
         if (Input.GetKeyDown("f") | Input.GetKeyDown("joystick button 2"))
         {
