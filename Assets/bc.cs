@@ -84,7 +84,7 @@ public class bc : MonoBehaviour
 
     void flash()
     {
-        sr.color = new Color(0, 0, 0);
+        sr.color = new Color(255, 0, 0);
         audio.PlayOneShot(pclip, 1f);
     }   
 
@@ -110,7 +110,7 @@ public class bc : MonoBehaviour
             putback = 0;
         }
 
-        if (sr.color.r == 0f)
+        if (sr.color.g == 0f)
         {
             putback = putback + 1;
         }

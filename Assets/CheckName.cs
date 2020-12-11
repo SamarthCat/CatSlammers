@@ -47,7 +47,7 @@ public class CheckName : MonoBehaviour
         // If there is less than 4 chars
         if (tmpi.text.Length <= 3)
         {
-            StartCoroutine(Flash("Min 4 Chars!"));
+            StartCoroutine(Flash("Minimum 4 Letters!"));
         }
 
         // If there is more than 16 chars

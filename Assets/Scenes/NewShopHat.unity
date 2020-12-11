@@ -4353,13 +4353,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 398538908}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ee1e3535d87af6479761fab5733bd41, type: 3}
+  m_Script: {fileID: 11500000, guid: 579c865a452612a4bb80e838d8dadd1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hat: Hat2
   Buy: {fileID: 427097183}
   Equip: {fileID: 398538911}
-  price: 30
+  price: 40
   ownership: {fileID: 1254791588}
   equiptext: {fileID: 1371568546}
 --- !u!114 &398538911
@@ -9060,7 +9060,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 861828562}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ee1e3535d87af6479761fab5733bd41, type: 3}
+  m_Script: {fileID: 11500000, guid: 579c865a452612a4bb80e838d8dadd1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hat: Hat0
@@ -10681,13 +10681,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 992695196}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ee1e3535d87af6479761fab5733bd41, type: 3}
+  m_Script: {fileID: 11500000, guid: 579c865a452612a4bb80e838d8dadd1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hat: Hat3
   Buy: {fileID: 461840546}
   Equip: {fileID: 992695199}
-  price: 45
+  price: 60
   ownership: {fileID: 879217077}
   equiptext: {fileID: 465749685}
 --- !u!114 &992695199
@@ -13621,13 +13621,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1234775856}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ee1e3535d87af6479761fab5733bd41, type: 3}
+  m_Script: {fileID: 11500000, guid: 579c865a452612a4bb80e838d8dadd1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hat: Hat1
   Buy: {fileID: 1133188517}
   Equip: {fileID: 1234775858}
-  price: 10
+  price: 30
   ownership: {fileID: 1673496744}
   equiptext: {fileID: 284804242}
 --- !u!1 &1245658163
@@ -15140,9 +15140,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cafcb48e0d8250b4591d57f6644ddc60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useJs: 0
-  js: {fileID: 0}
-  go: []
   vel: 0
   tf: {fileID: 1401650768}
   sr: {fileID: 1401650767}
@@ -17492,7 +17489,6 @@ MonoBehaviour:
   isToggle: 0
   pp: {fileID: 1625237181}
   tg: {fileID: 0}
-  fWidth: 9
 --- !u!114 &1625237184
 MonoBehaviour:
   m_ObjectHideFlags: 0

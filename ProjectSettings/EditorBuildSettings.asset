@@ -164,7 +164,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Leaderboard.unity
     guid: 157b775f88663274e871f5bb5077f9db
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Login.unity
     guid: 5d741eebb35fed541b9152668ba0299e
   - enabled: 1
