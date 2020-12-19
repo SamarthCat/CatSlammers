@@ -179,4 +179,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/NewShopMusic.unity
     guid: cffe3675e8170fd46982adbddc145b1d
+  - enabled: 1
+    path: Assets/Scenes/MapMulti.unity
+    guid: c24898d60ff640a40a9a84a5fcc7f590
   m_configObjects: {}

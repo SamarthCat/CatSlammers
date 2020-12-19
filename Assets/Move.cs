@@ -60,6 +60,11 @@ public class Move : MonoBehaviour
             SceneManager.LoadScene("TitleUser");
         }
 
+	if (String.IsNullOrEmpty(PlayerPrefs.GetString("currentMusic")))
+        {
+            PlayerPrefs.SetString("currentMusic", "Music1");
+        }
+
         sr = gameObject.GetComponent<SpriteRenderer>();
         if (PlayerPrefs.GetString("currentCat") == "cat1")
         {
