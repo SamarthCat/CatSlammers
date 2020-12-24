@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using EZCameraShake;
+using UnityEngine.SceneManagement;
 
 public class bc : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class bc : MonoBehaviour
     public AudioClip pclip;
     public AudioClip bossmusic;
     public GameObject gameoverui;
-    public GameObject winoverui;
+    GameObject winoverui;
     public PauseMenu pm;
     public float PDamage;
     public int amountToWin;
@@ -43,8 +44,40 @@ public class bc : MonoBehaviour
 
     void Start()
     {
+        winoverui = GameObject.FindGameObjectWithTag("YouWin");
+        winoverui.SetActive(false);
         en = FindObjectOfType<Encourage>();
         eps.Stop();
+    }
+
+    public void NextLevel()
+    {
+        var currentLevel = SceneManager.GetActiveScene().name;
+        var ls = gameObject.AddComponent<LevelSelector>();
+        var ll = GameObject.FindObjectOfType<LevelLoader>();
+        ls.ll = ll;
+        // If is not a level
+        if (!currentLevel.Contains("Map"))
+        {
+            Debug.LogError("This is Not A Level");
+            return;
+        }
+        // If is a multipart Level
+        if (currentLevel.Contains("."))
+        {
+            var currentLevelnumDot = currentLevel.Split('p');
+            var AfterMap = currentLevelnumDot[1];
+            var SplitFromDot = AfterMap.Split('.');
+            var nextLevelnumDot = int.Parse(SplitFromDot[0]) + 1;
+            ls.other = "Map" + nextLevelnumDot;
+            ls.Other();
+            return;
+        }
+        //Splits from the "p" in "Map"
+        var currentLevelnum = currentLevel.Split('p');
+        var nextLevelnum = int.Parse(currentLevelnum[1]) + 1;
+        ls.other = "Map" + nextLevelnum;
+        ls.Other();
     }
 
     public void CollideEnemy(Collision2D col)

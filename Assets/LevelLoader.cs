@@ -10,9 +10,16 @@ public class LevelLoader : MonoBehaviour
     public int currentResolutionIndex;
     public string[] optionHeight = {""};
     bool fs;
+    GUIStyle style;
 
     private void Awake()
     {
+        //FPS Controller starts here
+        style = new GUIStyle();
+        style.alignment = TextAnchor.UpperRight;
+        style.fontSize = 44;
+        style.normal.textColor = new Color32(0, 0, 0, 255);
+        //FPS Controller ends here
         resolutions = Screen.resolutions;
         List<string> options = new List<string>();
         currentResolutionIndex = PlayerPrefs.GetInt("res");
@@ -64,7 +71,10 @@ public class LevelLoader : MonoBehaviour
     {
         an.SetTrigger("Start");
 
-        yield return new WaitForSeconds(1);
+        if (PlayerPrefs.GetInt("noTrans") != 1)
+        {
+            yield return new WaitForSeconds(1);
+        }
 
         SceneManager.LoadScene(scene);
     }
@@ -75,5 +85,32 @@ public class LevelLoader : MonoBehaviour
         var euler = loader.transform.eulerAngles;
         euler.z -= 1.8f;
         loader.transform.eulerAngles = euler;
+    }
+
+    //FPS Controller starts here
+
+    private string _fpsText;
+    private float _hudRefreshRate = 0.01f;
+    private float _timer;
+
+    private void Update()
+    {
+        if (PlayerPrefs.GetInt("showFps") != 1) { return; }
+        if (Time.unscaledTime > _timer)
+        {
+            int fps = (int)(1f / Time.unscaledDeltaTime);
+            _fpsText = fps + "FPS";
+            _timer = Time.unscaledTime + _hudRefreshRate;
+        }
+    }
+
+    void OnGUI()
+    {
+        if (PlayerPrefs.GetInt("showFps") != 1) { return; }
+        int width = Screen.width;
+        int height = Screen.height;
+        Rect rect = new Rect(200, 0, width - 200, height * 2 / 100);
+
+        UnityEngine.GUI.Label(rect, _fpsText, style);
     }
 }

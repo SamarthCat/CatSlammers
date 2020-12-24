@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using UnityEngine;
 
 namespace Telepathy
 {
@@ -74,12 +75,13 @@ namespace Telepathy
             // exceptions are silent
             try
             {
+                
                 // start listener on all IPv4 and IPv6 address via .Create
                 listener = TcpListener.Create(port);
                 listener.Server.NoDelay = NoDelay;
                 listener.Server.SendTimeout = SendTimeout;
                 listener.Start();
-                Logger.Log("Server: listening port=" + port);
+                UnityEngine.Debug.Log("Server: listening port=" + port);
 
                 // keep accepting new clients
                 while (true)
@@ -113,14 +115,14 @@ namespace Telepathy
                         }
                         catch (ThreadAbortException)
                         {
-                            // happens on stop. don't log anything.
+                            // happens on stop. don't Log anything.
                             // (we catch it in SendLoop too, but it still gets
                             //  through to here when aborting. don't show an
-                            //  error.)
+                            //  .)
                         }
                         catch (Exception exception)
                         {
-                            Logger.LogError("Server send thread exception: " + exception);
+                            UnityEngine.Debug.Log("Server send thread exception: " + exception);
                         }
                     });
                     sendThread.IsBackground = true;
@@ -149,7 +151,7 @@ namespace Telepathy
                         }
                         catch (Exception exception)
                         {
-                            Logger.LogError("Server client thread exception: " + exception);
+                            UnityEngine.Debug.Log("Server client thread exception: " + exception);
                         }
                     });
                     receiveThread.IsBackground = true;
@@ -160,18 +162,18 @@ namespace Telepathy
             {
                 // UnityEditor causes AbortException if thread is still
                 // running when we press Play again next time. that's okay.
-                Logger.Log("Server thread aborted. That's okay. " + exception);
+                UnityEngine.Debug.Log("Server thread aborted. That's okay. " + exception);
             }
             catch (SocketException exception)
             {
                 // calling StopServer will interrupt this thread with a
                 // 'SocketException: interrupted'. that's okay.
-                Logger.Log("Server Thread stopped. That's okay. " + exception);
+                UnityEngine.Debug.Log("Server Thread stopped. That's okay. " + exception);
             }
             catch (Exception exception)
             {
                 // something went wrong. probably important.
-                Logger.LogError("Server Exception: " + exception);
+                UnityEngine.Debug.Log("Server Exception: " + exception);
             }
         }
 
@@ -192,10 +194,10 @@ namespace Telepathy
             // start the listener thread
             // (on low priority. if main thread is too busy then there is not
             //  much value in accepting even more clients)
-            Logger.Log("Server: Start port=" + port);
+            UnityEngine.Debug.Log("Server: Start port=" + port);
             listenerThread = new Thread(() => { Listen(port); });
             listenerThread.IsBackground = true;
-            listenerThread.Priority = ThreadPriority.BelowNormal;
+            listenerThread.Priority = System.Threading.ThreadPriority.BelowNormal;
             listenerThread.Start();
             return true;
         }
@@ -206,7 +208,7 @@ namespace Telepathy
             if (!Active)
                 return;
 
-            Logger.Log("Server: stopping...");
+            UnityEngine.Debug.Log("Server: stopping...");
 
             // stop listening to connections so that no one can connect while we
             // close the client connections
@@ -260,11 +262,11 @@ namespace Telepathy
                 // for example, if a client disconnects, the server might still
                 // try to send for one frame before it calls GetNextMessages
                 // again and realizes that a disconnect happened.
-                // so let's not spam the console with log messages.
-                //Logger.Log("Server.Send: invalid connectionId: " + connectionId);
+                // so let's not spam the console with Log messages.
+                //UnityEngine.Debug.Log("Server.Send: invalid connectionId: " + connectionId);
                 return false;
             }
-            Logger.LogError("Client.Send: message too big: " + data.Length + ". Limit: " + MaxMessageSize);
+            UnityEngine.Debug.Log("Client.Send: message too big: " + data.Length + ". Limit: " + MaxMessageSize);
             return false;
         }
 
@@ -289,7 +291,7 @@ namespace Telepathy
             {
                 // just close it. client thread will take care of the rest.
                 token.client.Close();
-                Logger.Log("Server.Disconnect connectionId:" + connectionId);
+                UnityEngine.Debug.Log("Server.Disconnect connectionId:" + connectionId);
                 return true;
             }
             return false;

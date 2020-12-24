@@ -7457,10 +7457,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: I Agree that I will not cheat or hack and that my information will be publicly
-    availible. I am aware that if I do not accept this agreement then I will not
-    be able to participate in Multiplayer or Leaderboards. If I agree but fail to
-    comply then I may get banned or sued.
+  m_text: I Agree that I will not cheat or hack and that my name and any other information
+    I put in may be publicly availible on the leaderboards. I am aware that if I
+    do not accept this agreement then I will not be able to participate in Multiplayer
+    or Leaderboards. If I agree but fail to comply then I may get banned or sued.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3762125e282c70b408a5a3e77da35096, type: 2}
   m_sharedMaterial: {fileID: 287295809573086596, guid: 3762125e282c70b408a5a3e77da35096, type: 2}
@@ -8098,7 +8098,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.6344752, y: 0}
   m_AnchorMax: {x: 0.6344752, y: 0}
-  m_AnchoredPosition: {x: -1.699997, y: 61.6}
+  m_AnchoredPosition: {x: -1.699997, y: 47.999985}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &857375569
@@ -8494,7 +8494,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.36442268, y: 0}
   m_AnchorMax: {x: 0.36442268, y: 0}
-  m_AnchoredPosition: {x: 0, y: 61.6}
+  m_AnchoredPosition: {x: 0, y: 48}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &871073550
@@ -19824,12 +19824,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.711
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96

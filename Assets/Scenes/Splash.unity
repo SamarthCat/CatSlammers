@@ -3976,7 +3976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ll: {fileID: 83391552}
-  other: Title
+  other: TitleNews
 --- !u!1 &1969406750
 GameObject:
   m_ObjectHideFlags: 0

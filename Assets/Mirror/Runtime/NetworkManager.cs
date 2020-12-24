@@ -1,17 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Net.Sockets;
-using System.Xml;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
-using System.Text;
-using System.Net;
-using System.IO;
 
 namespace Mirror
 {
@@ -27,9 +19,10 @@ namespace Mirror
 
     [DisallowMultipleComponent]
     [AddComponentMenu("Network/NetworkManager")]
-    [HelpURL("https://mirror-networking.com/docs/Components/NetworkManager.html")]
+    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkManager.html")]
     public class NetworkManager : MonoBehaviour
     {
+        bool isQuit = false;
         static readonly ILogger logger = LogFactory.GetLogger<NetworkManager>();
 
         /// <summary>
@@ -52,14 +45,11 @@ namespace Mirror
         /// <summary>
         /// Automatically invoke StartServer()
         /// <para>If the application is a Server Build, StartServer is automatically invoked.</para>
-        /// <para>Server build is true when "Server build" is checked in build menu, or BuildOptions.EnableHeadlessMode flag is in BuildOptions</para>	
+        /// <para>Server build is true when "Server build" is checked in build menu, or BuildOptions.EnableHeadlessMode flag is in BuildOptions</para>
         /// </summary>
         [Tooltip("Should the server auto-start when 'Server Build' is checked in build settings")]
         [FormerlySerializedAs("startOnHeadless")]
         public bool autoStartServerBuild = true;
-
-        [Obsolete("Use autoStartServerBuild instead.")]
-        public bool startOnHeadless { get => autoStartServerBuild; set => autoStartServerBuild = value; }
 
         /// <summary>
         /// Enables verbose debug messages in the console
@@ -192,12 +182,6 @@ namespace Mirror
         /// </summary>
         [NonSerialized]
         public bool clientLoadedScene;
-
-        /// <summary>
-        /// headless mode detection
-        /// </summary>
-        [Obsolete("Use #if UNITY_SERVER instead.")]
-        public static bool isHeadless => SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null;
 
         // helper enum to know if we started the networkmanager as server/client/host.
         // -> this is necessary because when StartHost changes server scene to
@@ -352,6 +336,12 @@ namespace Mirror
         /// </summary>
         public void StartServer()
         {
+            if (NetworkServer.active)
+            {
+                logger.LogWarning("Server already started.");
+                return;
+            }
+
             mode = NetworkManagerMode.ServerOnly;
 
             // StartServer is inherently ASYNCHRONOUS (=doesn't finish immediately)
@@ -390,6 +380,12 @@ namespace Mirror
         /// </summary>
         public void StartClient()
         {
+            if (NetworkClient.active)
+            {
+                logger.LogWarning("Client already started.");
+                return;
+            }
+
             mode = NetworkManagerMode.ClientOnly;
 
             InitializeSingleton();
@@ -426,6 +422,12 @@ namespace Mirror
         /// <param name="uri">location of the server to connect to</param>
         public void StartClient(Uri uri)
         {
+            if (NetworkClient.active)
+            {
+                logger.LogWarning("Client already started.");
+                return;
+            }
+
             mode = NetworkManagerMode.ClientOnly;
 
             InitializeSingleton();
@@ -459,6 +461,12 @@ namespace Mirror
         /// </summary>
         public void StartHost()
         {
+            if (NetworkServer.active || NetworkClient.active)
+            {
+                logger.LogWarning("Server or Client already started.");
+                return;
+            }
+
             mode = NetworkManagerMode.Host;
 
             // StartHost is inherently ASYNCHRONOUS (=doesn't finish immediately)
@@ -606,7 +614,10 @@ namespace Mirror
                 return;
 
             if (authenticator != null)
+            {
                 authenticator.OnServerAuthenticated.RemoveListener(OnServerAuthenticated);
+                OnStopServer();
+            }
 
             OnStopServer();
 
@@ -634,7 +645,10 @@ namespace Mirror
         public void StopClient()
         {
             if (authenticator != null)
+            {
                 authenticator.OnClientAuthenticated.RemoveListener(OnClientAuthenticated);
+                OnStopClient();
+            }
 
             OnStopClient();
 
@@ -660,6 +674,7 @@ namespace Mirror
             networkSceneName = "";
         }
 
+
         /// <summary>
         /// called when quitting the application by closing the window / pressing stop in the editor
         /// <para>virtual so that inheriting classes' OnApplicationQuit() can call base.OnApplicationQuit() too</para>
@@ -669,6 +684,7 @@ namespace Mirror
             // stop client first
             // (we want to send the quit packet to the server instead of waiting
             //  for a timeout)
+            isQuit = true;
             if (NetworkClient.isConnected)
             {
                 StopClient();
@@ -809,7 +825,7 @@ namespace Mirror
 
         /// <summary>
         /// This causes the server to switch scenes and sets the networkSceneName.
-        /// <para>Clients that connect to this server will automatically switch to this scene. This is called autmatically if onlineScene or offlineScene are set, but it can be called from user code to switch scenes again while the game is in progress. This automatically sets clients to be not-ready. The clients must call NetworkClient.Ready() again to participate in the new scene.</para>
+        /// <para>Clients that connect to this server will automatically switch to this scene. This is called autmatically if onlineScene or offlineScene are set, but it can be called from user code to switch scenes again while the game is in progress. This automatically sets clients to be not-ready during the change and ready again to participate in the new scene.</para>
         /// </summary>
         /// <param name="newSceneName"></param>
         public virtual void ServerChangeScene(string newSceneName)
@@ -1206,13 +1222,6 @@ namespace Mirror
             OnServerAddPlayer(conn);
         }
 
-        // Deprecated 5/2/2020
-        /// <summary>
-        /// Obsolete: Removed as a security risk. Use <see cref="NetworkServer.RemovePlayerForConnection(NetworkConnection, bool)">NetworkServer.RemovePlayerForConnection</see> instead.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never), Obsolete("Removed as a security risk. Use NetworkServer.RemovePlayerForConnection(NetworkConnection conn, bool keepAuthority = false) instead", true)]
-        void OnServerRemovePlayerMessageInternal(NetworkConnection conn, RemovePlayerMessage msg) { }
-
         void OnServerErrorInternal(NetworkConnection conn, ErrorMessage msg)
         {
             logger.Log("NetworkManager.OnServerErrorInternal");
@@ -1312,10 +1321,9 @@ namespace Mirror
         public virtual void OnServerDisconnect(NetworkConnection conn)
         {
             NetworkServer.DestroyPlayerForConnection(conn);
-            StopServer();
-            StopClient();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             logger.Log("OnServerDisconnect: Client disconnected.");
+            if (isQuit) { return; }
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
         /// <summary>
@@ -1348,19 +1356,12 @@ namespace Mirror
             NetworkServer.AddPlayerForConnection(conn, player);
         }
 
-        // Deprecated 5/2/2020
-        /// <summary>
-        /// Obsolete: Removed as a security risk. Use <see cref="NetworkServer.RemovePlayerForConnection(NetworkConnection, bool)">NetworkServer.RemovePlayerForConnection</see> instead.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never), Obsolete("Removed as a security risk. Use NetworkServer.RemovePlayerForConnection(NetworkConnection conn, bool keepAuthority = false) instead", true)]
-        public virtual void OnServerRemovePlayer(NetworkConnection conn, NetworkIdentity player) { }
-
         /// <summary>
         /// Called on the server when a network error occurs for a client connection.
         /// </summary>
         /// <param name="conn">Connection from client.</param>
         /// <param name="errorCode">Error code.</param>
-        public virtual void OnServerError(NetworkConnection conn, int errorCode) { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
+        public virtual void OnServerError(NetworkConnection conn, int errorCode) { }
 
         /// <summary>
         /// Called from ServerChangeScene immediately before SceneManager.LoadSceneAsync is executed
@@ -1408,6 +1409,7 @@ namespace Mirror
         public virtual void OnClientDisconnect(NetworkConnection conn)
         {
             StopClient();
+            if (isQuit) { return; }
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
@@ -1416,7 +1418,7 @@ namespace Mirror
         /// </summary>
         /// <param name="conn">Connection to a server.</param>
         /// <param name="errorCode">Error code.</param>
-        public virtual void OnClientError(NetworkConnection conn, int errorCode) { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
+        public virtual void OnClientError(NetworkConnection conn, int errorCode) { }
 
         /// <summary>
         /// Called on clients when a servers tells the client it is no longer ready.
@@ -1424,16 +1426,6 @@ namespace Mirror
         /// </summary>
         /// <param name="conn">Connection to the server.</param>
         public virtual void OnClientNotReady(NetworkConnection conn) { }
-
-        // Deprecated 12/22/2019
-        /// <summary>
-        /// Obsolete: Use <see cref="OnClientChangeScene(string, SceneOperation, bool)">OnClientChangeScene(string, SceneOperation, bool)</see> instead.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never), Obsolete("Override OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling) instead", true)]
-        public virtual void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation)
-        {
-            OnClientChangeScene(newSceneName, sceneOperation, false);
-        }
 
         /// <summary>
         /// Called from ClientChangeScene immediately before SceneManager.LoadSceneAsync is executed
@@ -1480,10 +1472,7 @@ namespace Mirror
         /// This is invoked when a server is started - including when a host is started.
         /// <para>StartServer has multiple signatures, but they all cause this hook to be called.</para>
         /// </summary>
-        public virtual void OnStartServer() {
-            //NAT.Discover();
-            //NAT.ForwardPort(25631, ProtocolType.Tcp, "Cat Slammers TCP Port Forwarding Protocol(" + "25631" + ")");
-        }
+        public virtual void OnStartServer() { }
 
         /// <summary>
         /// This is invoked when the client is started.
@@ -1493,181 +1482,18 @@ namespace Mirror
         /// <summary>
         /// This is called when a server is stopped - including when a host is stopped.
         /// </summary>
-        public virtual void OnStopServer() { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
+        public virtual void OnStopServer() { }
 
         /// <summary>
         /// This is called when a client is stopped.
         /// </summary>
-        public virtual void OnStopClient() { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
+        public virtual void OnStopClient() { }
 
         /// <summary>
         /// This is called when a host is stopped.
         /// </summary>
-        public virtual void OnStopHost() { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
+        public virtual void OnStopHost() { }
 
         #endregion
-
     }
-
-
-    public class NAT
-    {
-        static TimeSpan _timeout = new TimeSpan(0, 0, 0, 3);
-        public static TimeSpan TimeOut
-        {
-            get { return _timeout; }
-            set { _timeout = value; }
-        }
-        static string _descUrl, _serviceUrl, _eventUrl;
-        public static bool Discover()
-        {
-            Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            s.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
-            string req = "M-SEARCH * HTTP/1.1\r\n" +
-            "HOST: 239.255.255.250:1900\r\n" +
-            "ST:upnp:rootdevice\r\n" +
-            "MAN:\"ssdp:discover\"\r\n" +
-            "MX:3\r\n\r\n";
-            byte[] data = Encoding.ASCII.GetBytes(req);
-            IPEndPoint ipe = new IPEndPoint(IPAddress.Broadcast, 1900);
-            byte[] buffer = new byte[0x1000];
-
-            DateTime start = DateTime.Now;
-
-            do
-            {
-                s.SendTo(data, ipe);
-                s.SendTo(data, ipe);
-                s.SendTo(data, ipe);
-
-                int length = 0;
-                do
-                {
-                    length = s.Receive(buffer);
-
-                    string resp = Encoding.ASCII.GetString(buffer, 0, length).ToLower();
-                    if (resp.Contains("upnp:rootdevice"))
-                    {
-                        resp = resp.Substring(resp.ToLower().IndexOf("location:") + 9);
-                        resp = resp.Substring(0, resp.IndexOf("\r")).Trim();
-                        if (!string.IsNullOrEmpty(_serviceUrl = GetServiceUrl(resp)))
-                        {
-                            _descUrl = resp;
-                            return true;
-                        }
-                    }
-                } while (length > 0);
-            } while (start.Subtract(DateTime.Now) < _timeout);
-            return false;
-        }
-
-        private static string GetServiceUrl(string resp)
-        {
-#if !DEBUG
-            try
-            {
-#endif
-            XmlDocument desc = new XmlDocument();
-            desc.Load(WebRequest.Create(resp).GetResponse().GetResponseStream());
-            XmlNamespaceManager nsMgr = new XmlNamespaceManager(desc.NameTable);
-            nsMgr.AddNamespace("tns", "urn:schemas-upnp-org:device-1-0");
-            XmlNode typen = desc.SelectSingleNode("//tns:device/tns:deviceType/text()", nsMgr);
-            if (!typen.Value.Contains("InternetGatewayDevice"))
-                return null;
-            XmlNode node = desc.SelectSingleNode("//tns:service[tns:serviceType=\"urn:schemas-upnp-org:service:WANIPConnection:1\"]/tns:controlURL/text()", nsMgr);
-            if (node == null)
-                return null;
-            XmlNode eventnode = desc.SelectSingleNode("//tns:service[tns:serviceType=\"urn:schemas-upnp-org:service:WANIPConnection:1\"]/tns:eventSubURL/text()", nsMgr);
-            _eventUrl = CombineUrls(resp, eventnode.Value);
-            return CombineUrls(resp, node.Value);
-#if !DEBUG
-            }
-            catch { return null; }
-#endif
-        }
-
-        private static string CombineUrls(string resp, string p)
-        {
-            int n = resp.IndexOf("://");
-            n = resp.IndexOf('/', n + 3);
-            return resp.Substring(0, n) + p;
-        }
-
-        public static void ForwardPort(int port, ProtocolType protocol, string description)
-        {
-            if (string.IsNullOrEmpty(_serviceUrl))
-                throw new Exception("No UPnP service available or Discover() has not been called");
-            XmlDocument xdoc = SOAPRequest(_serviceUrl, "<u:AddPortMapping xmlns:u=\"urn:schemas-upnp-org:service:WANIPConnection:1\">" +
-                "<NewRemoteHost></NewRemoteHost><NewExternalPort>" + port.ToString() + "</NewExternalPort><NewProtocol>" + protocol.ToString().ToUpper() + "</NewProtocol>" +
-                "<NewInternalPort>" + port.ToString() + "</NewInternalPort><NewInternalClient>" + Dns.GetHostAddresses(Dns.GetHostName())[0].ToString() +
-                "</NewInternalClient><NewEnabled>1</NewEnabled><NewPortMappingDescription>" + description +
-            "</NewPortMappingDescription><NewLeaseDuration>0</NewLeaseDuration></u:AddPortMapping>", "AddPortMapping");
-        }
-
-        public static void DeleteForwardingRule(int port, ProtocolType protocol)
-        {
-            if (string.IsNullOrEmpty(_serviceUrl))
-                throw new Exception("No UPnP service available or Discover() has not been called");
-            XmlDocument xdoc = SOAPRequest(_serviceUrl,
-            "<u:DeletePortMapping xmlns:u=\"urn:schemas-upnp-org:service:WANIPConnection:1\">" +
-            "<NewRemoteHost>" +
-            "</NewRemoteHost>" +
-            "<NewExternalPort>" + port + "</NewExternalPort>" +
-            "<NewProtocol>" + protocol.ToString().ToUpper() + "</NewProtocol>" +
-            "</u:DeletePortMapping>", "DeletePortMapping");
-        }
-
-        public static IPAddress GetExternalIP()
-        {
-            if (string.IsNullOrEmpty(_serviceUrl))
-                throw new Exception("No UPnP service available or Discover() has not been called");
-            XmlDocument xdoc = SOAPRequest(_serviceUrl, "<u:GetExternalIPAddress xmlns:u=\"urn:schemas-upnp-org:service:WANIPConnection:1\">" +
-            "</u:GetExternalIPAddress>", "GetExternalIPAddress");
-            XmlNamespaceManager nsMgr = new XmlNamespaceManager(xdoc.NameTable);
-            nsMgr.AddNamespace("tns", "urn:schemas-upnp-org:device-1-0");
-            string IP = xdoc.SelectSingleNode("//NewExternalIPAddress/text()", nsMgr).Value;
-            return IPAddress.Parse(IP);
-        }
-
-        private static XmlDocument SOAPRequest(string url, string soap, string function)
-        {
-            string req = "<?xml version=\"1.0\"?>" +
-            "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">" +
-            "<s:Body>" +
-            soap +
-            "</s:Body>" +
-            "</s:Envelope>";
-            WebRequest r = HttpWebRequest.Create(url);
-            r.Method = "POST";
-            byte[] b = Encoding.UTF8.GetBytes(req);
-            r.Headers.Add("SOAPACTION", "\"urn:schemas-upnp-org:service:WANIPConnection:1#" + function + "\"");
-            r.ContentType = "text/xml; charset=\"utf-8\"";
-            r.ContentLength = b.Length;
-            r.GetRequestStream().Write(b, 0, b.Length);
-            XmlDocument resp = new XmlDocument();
-            WebResponse wres = r.GetResponse();
-            Stream ress = wres.GetResponseStream();
-            resp.Load(ress);
-            return resp;
-        }
-    }
-
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            try
-            {
-                Console.WriteLine(NAT.Discover());
-                Debug.Log("You have an UPnP-enabled router and your IP is: " + NAT.GetExternalIP());
-            }
-            catch
-            {
-                Debug.Log("You do not have an UPnP-enabled router.");
-            }
-            return;
-        }
-    }
-
-
 }

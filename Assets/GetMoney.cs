@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GetMoney : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class GetMoney : MonoBehaviour
 
     void Start()
     {
-
+        mapno = SceneManager.GetActiveScene().name.ToLower();
     }
 
     public void win(int amount)
@@ -19,7 +20,7 @@ public class GetMoney : MonoBehaviour
         PlayerPrefs.SetInt("dataCoins", PlayerPrefs.GetInt("dataCoins") + amount);
         PlayerPrefs.SetString(mapno, "yes");
         canget = false;
-       
+
     }
 
 

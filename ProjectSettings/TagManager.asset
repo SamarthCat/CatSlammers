@@ -8,6 +8,8 @@ TagManager:
   - LevelPart
   - PopUp
   - Audio
+  - Stick
+  - YouWIn
   layers:
   - Default
   - TransparentFX

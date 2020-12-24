@@ -22,6 +22,7 @@ public class MMove : NetworkBehaviour
     [SerializeField]
     public Transform tf;
     public SpriteRenderer sr;
+    public SpriteRenderer hsr;
     public SpriteRenderer bsr;
     public Sprite cat1;
     public Sprite cat1bullet;
@@ -57,11 +58,21 @@ public class MMove : NetworkBehaviour
 
         sr = gameObject.GetComponent<SpriteRenderer>();
         CmdSyncCat(PlayerPrefs.GetString("currentCat"));
-
+        CmdSyncHat(PlayerPrefs.GetString("currentHat"));
     }
 
-    
 
+    [Command]
+    void CmdSyncHat(string hat)
+    {
+        RpcSyncHat(hat);
+    }
+
+    [ClientRpc]
+    void RpcSyncHat(string hat)
+    {
+        hsr.sprite = Resources.Load<Sprite>(hat);
+    }
 
     [Command]
     void CmdSyncCat(string cat)
@@ -135,7 +146,6 @@ public class MMove : NetworkBehaviour
         if (myHealth <= 0)
         {
             sr.enabled = false;
-            finished = true;
         }
         if (!hasAuthority)
         {
@@ -150,6 +160,7 @@ public class MMove : NetworkBehaviour
             return;
         }
         CmdSyncCat(PlayerPrefs.GetString("currentCat"));
+        CmdSyncHat(PlayerPrefs.GetString("currentHat"));
         xmov = Input.GetAxisRaw("Horizontal");
 
 
@@ -194,6 +205,7 @@ public class MMove : NetworkBehaviour
 
     void Update()
     {
+        if (finished) { return; }
         if (myHealth <= 0)
         {
             if (hasAuthority)
@@ -204,6 +216,7 @@ public class MMove : NetworkBehaviour
             {
                 Win.SetActive(true);
             }
+            finished = true;
         }
     }
 

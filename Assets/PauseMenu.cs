@@ -16,12 +16,12 @@ public class PauseMenu : MonoBehaviour
 
 
 
-    void Start()
+    void Awake()
     {
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         GameIsPaused = false;
-
+        es3 = GameObject.FindGameObjectWithTag("YouWin").GetComponentInParent<EventSystem>();
     }
 
     // Update is called once per frame

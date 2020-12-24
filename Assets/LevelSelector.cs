@@ -11,6 +11,14 @@ public class LevelSelector : MonoBehaviour
     public LevelLoader ll;
     public string other;
 
+    void Awake()
+    {
+        if (ll == null)
+        {
+            ll = FindObjectOfType<LevelLoader>();
+        }
+    }
+
     public void Back()
     {
         Time.timeScale = 1f;
